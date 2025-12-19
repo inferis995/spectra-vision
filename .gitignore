@@ -13,3 +13,6 @@ go2rtc.yaml
 # Debug/Sensitive files
 debug_dump.json
 token_output.txt
+
+# Docker data volumes
+data/

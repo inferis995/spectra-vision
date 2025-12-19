@@ -50,6 +50,24 @@ node server.js
 ```
 Apri il browser su: `http://localhost:3005`
 
+## 🐳 Docker Deployment
+
+### Metodo Veloce (Windows)
+```batch
+deploy.bat
+```
+Lo script si occupa di tutto: crea il container, configura i volumi e avvia l'app.
+
+### Metodo Manuale
+```bash
+# Crea il file .env con il tuo token
+cp .env.example .env
+# Modifica .env con il tuo RING_REFRESH_TOKEN
+
+# Build e avvia
+docker-compose up -d --build
+```
+
 ## 🛠️ Requisiti
 - Node.js v14+
 - FFmpeg installato nel sistema (deve essere nel PATH)
