@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPECTRA // VISION - Events</title>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .events-table-container {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 200px);
+            /* Altezza fissa per scorrimento */
+        }
+
+        .table-scroll-wrapper {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .events-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+
+        .events-table th {
+            text-align: left;
+            padding: 1rem;
+            background: rgba(255, 69, 0, 0.1);
+            color: var(--acc-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .events-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .events-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .event-icon {
+            margin-right: 10px;
+        }
+
+        .type-ding {
+            color: #ffff00;
+            text-shadow: 0 0 5px #ffff00;
+        }
+
+        .type-motion {
+            color: #00ffff;
+        }
+
+        .type-on_demand {
+            color: #00ff00;
+        }
+
+        .refresh-btn {
+            background: transparent;
+            border: 1px solid var(--acc-color);
+            color: var(--acc-color);
+            padding: 8px 16px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: var(--acc-color);
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scan-line"></div>
+    <div class="overlay-grid"></div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-text">SPECTRA<span class="slash">//</span>VISION</span>
+            </div>
+            <nav class="nexus-nav">
+                <a href="/" class="nav-item">[01] DASHBOARD</a>
+                <a href="/monitoring.html" class="nav-item">[02] MONITORING</a>
+                <a href="/events.html" class="nav-item active">[03] EVENTS</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="system-status">
+                    <button class="refresh-btn" onclick="loadEvents()">↻ REFRESH DATA</button>
+                    <span class="status-value online" style="margin-left: 15px">ONLINE</span>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="module-panel">
+                    <div class="panel-header">
+                        <h3><span class="panel-id">03.</span> EVENTS HISTORY</h3>
+                        <span class="panel-id">SERVER LOGS</span>
+                    </div>
+
+                    <div class="events-table-container">
+                        <div class="table-scroll-wrapper">
+                            <table class="events-table">
+                                <thead>
+                                    <tr>
+                                        <th>TIMESTAMP</th>
+                                        <th>DEVICE</th>
+                                        <th>EVENT TYPE</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="events-body">
+                                    <tr>
+                                        <td colspan="3" style="text-align: center; color: #666;">Loading events...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="notifications.js"></script>
+    <script>
+        const socket = io();
+
+        // Init Global Notifications
+        if (window.setupGlobalNotifications) {
+            window.setupGlobalNotifications(socket);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadEvents);
+
+        async function loadEvents() {
+            try {
+                const tbody = document.getElementById('events-body');
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #666;">Loading...</td></tr>';
+
+                const response = await fetch('/api/events');
+                const events = await response.json();
+
+                tbody.innerHTML = '';
+
+                if (events.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #666;">No events found</td></tr>';
+                    return;
+                }
+
+                events.forEach(event => {
+                    const tr = document.createElement('tr');
+                    const date = new Date(event.createdAt).toLocaleString('it-IT');
+
+                    let icon = '';
+                    let typeClass = '';
+                    let typeLabel = event.type;
+
+                    if (event.type === 'ding') {
+                        // Bell Icon
+                        icon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>`;
+                        typeClass = 'type-ding';
+                        typeLabel = 'DOORBELL RING';
+                    } else if (event.type === 'motion') {
+                        // Activity Pulse Icon
+                        icon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>`;
+                        typeClass = 'type-motion';
+                        typeLabel = 'MOTION DETECTED';
+                    } else if (event.type === 'on_demand') {
+                        // Eye Icon
+                        icon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+                        typeClass = 'type-on_demand';
+                        typeLabel = 'LIVE VIEW';
+                    }
+
+                    tr.innerHTML = `
+                        <td>${date}</td>
+                        <td>${event.deviceName}</td>
+                        <td class="${typeClass}" style="display: flex; align-items: center; gap: 10px;">
+                            ${icon} <span>${typeLabel}</span>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Error loading events:', error);
+                document.getElementById('events-body').innerHTML = '<tr><td colspan="3" style="text-align: center; color: red;">Error loading events</td></tr>';
+            }
+        }
+
+        // Listen for new real-time events to auto-refresh
+        socket.on('ring-notification', () => {
+            // Optional: Show a "New events available" toaster or auto-refresh
+            // For now, let's just log it
+            console.log('New event received, you might want to refresh');
+        });
+    </script>
+</body>
+
+</html>

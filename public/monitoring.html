@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPECTRA // VISION - Monitoring</title>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="scan-line"></div>
+    <div class="overlay-grid"></div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-text">SPECTRA<span class="slash">//</span>VISION</span>
+            </div>
+            <nav class="nexus-nav">
+                <a href="/" class="nav-item">[01] DASHBOARD</a>
+                <a href="/monitoring.html" class="nav-item active">[02] MONITORING</a>
+                <a href="/events.html" class="nav-item">[03] EVENTS</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="system-status">
+                    <span class="status-label">REFRESH RATE:</span>
+                    <span class="status-value" id="refresh-rate" style="color: var(--acc-color)">0.33 FPS</span>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+
+                <!-- Stats Overview -->
+                <div class="stats-bar">
+                    <div class="stat-box">
+                        <span class="stat-label">SYSTEM STATUS</span>
+                        <span class="stat-value"><span class="live-pulse"></span>ACTIVE</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">CAMERAS</span>
+                        <span class="stat-value" id="camera-count">1</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">TOTAL SNAPSHOTS</span>
+                        <span class="stat-value" id="snapshot-count">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">LAST UPDATE</span>
+                        <span class="stat-value" id="last-update">--:--:--</span>
+                    </div>
+                </div>
+
+                <!-- Camera Grid -->
+                <div id="cameras-grid" class="cameras-grid">
+                    <!-- Cameras injected by JS -->
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="notifications.js"></script>
+    <script src="monitoring.js"></script>
+</body>
+
+</html>

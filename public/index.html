@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPECTRA // VISION - Dashboard</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="scan-line"></div>
+    <div class="overlay-grid"></div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-text">SPECTRA<span class="slash">//</span>VISION</span>
+            </div>
+            <nav class="nexus-nav">
+                <a href="/" class="nav-item active">[01] DASHBOARD</a>
+                <a href="/monitoring.html" class="nav-item">[02] MONITORING</a>
+                <a href="/events.html" class="nav-item">[03] EVENTS</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="system-status">
+                    <span class="status-label">SYSTEM STATUS:</span>
+                    <span class="status-value online">ONLINE</span>
+                    <button id="audio-enable-btn" class="console-btn">AUDIO INIT</button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="dashboard-grid">
+                    <!-- Live Stream Section -->
+                    <section class="module-panel live-panel">
+                        <div class="panel-header">
+                            <h3><span class="panel-id">01.</span> LIVE FEED</h3>
+                            <div class="live-indicator-wrapper">
+                                <span id="live-indicator" class="live-pulse" style="display:none;"></span>
+                                <span id="last-update">READY</span>
+                            </div>
+                        </div>
+
+                        <div class="video-container">
+                            <div class="viewfinder"></div>
+                            <video id="live-video" autoplay playsinline muted></video>
+                            <img id="live-snapshot" src="" alt="Live View" style="display: none;" />
+
+                            <div class="video-overlay-controls">
+                                <div class="control-group">
+                                    <button id="start-live-btn" class="nexus-btn primary">
+                                        ▶ STREAM
+                                    </button>
+                                    <button id="stop-live-btn" class="nexus-btn danger" style="display: none;">
+                                        ■ STOP
+                                    </button>
+                                    <button id="fullscreen-btn" class="nexus-btn" title="Fullscreen">
+                                        ⛶
+                                    </button>
+                                </div>
+
+                                <div class="control-group">
+                                    <button id="audio-btn" class="nexus-btn secondary" disabled>
+                                        🔊 LISTEN
+                                    </button>
+                                    <button id="mic-btn" class="nexus-btn warning" disabled>
+                                        🎤 TALK
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Events Section -->
+                    <section class="module-panel events-panel">
+                        <div class="panel-header">
+                            <h3><span class="panel-id">02.</span> SYSTEM LOGS</h3>
+                            <span class="panel-id">REALTIME</span>
+                        </div>
+                        <div id="events-list" class="console-log">
+                            <div class="log-entry system">
+                                <span class="ts">--:--:--</span>
+                                <span class="msg">System initialized. Waiting for input...</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Recent Snapshots Gallery (New) -->
+                    <section class="module-panel gallery-panel" style="grid-column: span 2;">
+                        <div class="panel-header">
+                            <h3><span class="panel-id">03.</span> RECENT CAPTURES</h3>
+                            <span class="panel-id">ARCHIVE</span>
+                        </div>
+                        <div id="snapshot-gallery" class="gallery-grid">
+                            <!-- Images injected here -->
+                            <div style="padding:10px; color:#666;">Waiting for events...</div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Hidden Logic Elements -->
+    <div id="video-modal" class="nexus-modal">
+        <div class="modal-content"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="notifications.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

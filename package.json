@@ -1,0 +1,41 @@
+{
+  "name": "spectra-vision",
+  "version": "1.0.0",
+  "description": "Sci-Fi Interface for Ring Intercom/Doorbell with Low Latency Streaming",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "link-account": "npx -p ring-client-api ring-auth-cli",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ring",
+    "doorbell",
+    "intercom",
+    "ffmpeg",
+    "homebridge",
+    "low-latency",
+    "hls",
+    "webrtc"
+  ],
+  "author": "Poola Ai",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/inferis995/spectra-vision.git"
+  },
+  "bugs": {
+    "url": "https://github.com/inferis995/spectra-vision/issues"
+  },
+  "homepage": "https://github.com/inferis995/spectra-vision#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "ffmpeg-for-homebridge": "^2.2.0",
+    "g711": "^1.0.1",
+    "opusscript": "^0.1.1",
+    "ring-client-api": "^14.2.0",
+    "socket.io": "^4.8.1",
+    "werift": "^0.22.2"
+  }
+}
